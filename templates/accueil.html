@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Okatech Bénin - Page d'Accueil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/accueil.css') }}">
+    <script src="{{ url_for('static', filename='js/script1.js') }}" defer></script>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo Okatech" id="logo" />
+        </div>
+        <div class="site-title">Okatech-Bénin</div>
+
+        <nav>
+            <div class="menu-icon" id="burger">&#9776;</div>
+            <ul class="nav-links" id="navLinks">
+                <div class="menu-icon" id="closeSidebar">&times;</div>
+                <li><a href="/" class="g">🏠 Accueil</a></li>
+                <li><a href="/galerie" class="o">🎌 Galerie Anime</a></li>
+                <li><a href="/populaires">🔥 Populaires</a></li>
+                {% if session.get('user_id') %}
+                <li><a href="/favoris" class="o">⭐ Mes Favoris</a></li>
+                <li><a href="/profil" class="o">💡 Mon Profil</a></li>
+                <li><a href="/deconnexion" class="o">🚪 Déconnexion</a></li>
+                {% else %}
+                <li><a href="/formulaire" class="o">💡 Inscription</a></li>
+                <li><a href="/connexion" class="o">🔒 Connexion</a></li>
+                {% endif %}
+                {% if session.get('role') == 'admin' %}
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('stats') }}">Statistiques</a></li>
+                {% endif %}
+
+            </ul>
+        </nav>
+    </header>
+
+    <main class="content-wrapper">
+        <section class="about-us">
+            <h1>À propos de nous</h1>
+            <div class="box">
+                <p>
+                    Okatech and Co est une association de jeunes leaders passionnés du numérique, visant à innover dans
+                    leurs domaines.
+                    Ce site web est un recueil des services et travaux réalisés par ses membres.
+                </p>
+            </div>
+        </section>
+
+        <section class="services">
+            <h1>Nos Services</h1>
+
+            <div class="box service-item">
+                <a href="developpement_web.html" class="service-link">
+                    <h2>Développement Web et Mobile</h2>
+                </a>
+                <p>
+                    Nous proposons des services de développement d’applications web et mobiles pour moderniser vos
+                    projets et entreprises.
+                </p>
+            </div>
+
+            <div class="box service-item">
+                <a href="/galerie" class="service-link">
+                    <h2>Galerie Anime</h2>
+                </a>
+                <p>
+                    Découvrez et téléchargez des fonds d'écran anime 4K légaux et exclusifs.
+                </p>
+            </div>
+
+            <div class="box service-item">
+                <a href="ecommerce.html" class="service-link">
+                    <h2>E-Commerce</h2>
+                </a>
+                <p>
+                    Bientôt en ligne : produits tech et accessoires pour vos besoins numériques.
+                </p>
+            </div>
+
+            <div class="box service-item">
+                <a href="/formulaire" class="service-link">
+                    <h2>Innovations et Idées</h2>
+                </a>
+                <p>
+                    Vous avez une idée ou un projet numérique ? Rejoignez-nous en vous inscrivant et développez-le avec
+                    notre communauté.
+                </p>
+            </div>
+        </section>
+
+        <section class="pricing">
+            <h1>Nos Tarifs</h1>
+            <div class="box pricing-list">
+                <h3>Services gratuits</h3>
+                <ul>
+                    <li>Accès à la galerie Anime</li>
+                    <li>Création de profil utilisateur</li>
+                </ul>
+
+                <h3>Services payants</h3>
+                <ul>
+                    <li>Développement Web - <a href="/formulaire" class="cta-link">Contactez-nous</a></li>
+                    <li>Développement Mobile - <a href="/formulaire" class="cta-link">Contactez-nous</a></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <button id="scrollBtn" title="Remonter en haut">↑</button>
+
+    <footer>
+        <p>
+            &copy; 2025 Okatech-Bénin. Tous droits réservés.<br>
+            <a href="mailto:contact@okatech-benin.com">Contact</a>
+        </p>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Statistiques des utilisateurs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profil.css') }}">
+
+</head>
+
+<body>
+    <h1>📊 Statistiques des utilisateurs</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom Utilisateur</th>
+                <th>Page consultée</th>
+                <th>Date & Heure</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for stat in stats %}
+            <tr>
+                <td>{{ stat[0] }}</td>
+                <td>{{ stat[1] }}</td>
+                <td>{{ stat[2] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <p style="text-align:center; margin-top: 20px;">
+    <p><a href="{{ url_for('dashboard') }}">Retour au dashboard</a></p>
+    </p>
+</body>
+
+</html>
+
+
+
+
+<!--
+
+</tr>
+</thead>
+<tbody>
+    {% for nom, page, timestamp in stats %}
+    <tr>
+        <td>{{ nom }}</td>
+        <td>{{ page }}</td>
+        <td>{{ timestamp }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="3" style="text-align:center;">Aucune donnée</td>
+    </tr>
+    {% endfor %}
+</tbody> -->

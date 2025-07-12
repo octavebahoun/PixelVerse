@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des utilisateurs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gestion_utilisateurs.css') }}">
+
+</head>
+
+<body>
+    <h1>Liste des utilisateurs</h1>
+
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+        {% for user in utilisateurs %}
+        <tr>
+            <td>{{ user['id'] }}</td>
+            <td>{{ user['nom'] }}</td>
+            <td>{{ user['email'] }}</td>
+            <td>
+                <form action="{{ url_for('supprimer_utilisateur', user_id=user['id']) }}" method="post"
+                    onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                    <button type="submit">Supprimer</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="{{ url_for('dashboard') }}">← Retour au Dashboard</a>
+
+</body>
+
+</html>

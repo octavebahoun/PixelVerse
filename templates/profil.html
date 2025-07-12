@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Profil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profil.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/connexion.css') }}">
+</head>
+
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" width="100" height="100" alt="Logo Okatech"
+                id="logo" />
+        </div>
+        <div class="site-title">Okatech-Bénin</div>
+
+
+        <nav>
+            <div class="menu-icon" id="burger">&#9776;</div>
+            <ul class="nav-links" id="navLinks">
+                <div class="menu-icon" id="closeSidebar">&times;</div>
+                <li><a href="/" class="g">🏠 Accueil</a></li>
+                <li><a href="/galerie" class="o">🎌 Galerie Anime</a></li>
+                <li><a href="/populaires">🔥 Populaires</a></li>
+                {% if session.get('user_id') %}
+                <li><a href="/favoris" class="o">⭐ Mes Favoris</a></li>
+                <li><a href="/profil" class="o">💡 Mon Profil</a></li>
+                <li><a href="/deconnexion" class="o">🚪 Déconnexion</a></li>
+                {% else %}
+                <li><a href="/formulaire" class="o">💡 Inscription</a></li>
+                <li><a href="/connexion" class="o">🔒 Connexion</a></li>
+                {% endif %}
+                {% if session.get('role') == 'admin' %}
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('stats') }}">Statistiques</a></li>
+                {% endif %}
+
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <h1>👤 Mon Profil</h1>
+        <p><strong>Nom :</strong> {{ nom }}</p>
+        <p><strong>Email :</strong> {{ email }}</p>
+
+        <a href="/modifier_profil">✏️ Modifier mes informations</a>
+        <a href="/favoris">⭐ Mes Favoris</a>
+        <a href="/">🏠 Accueil</a>
+        <a href="{{ url_for('upload_image') }}">Uploader </a>
+
+        <form method="POST" action="/supprimer_compte"
+            onsubmit="return confirm('Supprimer votre compte définitivement ?');">
+            <button type="submit">❌ Supprimer mon compte</button>
+        </form>
+    </div>
+</body>
+
+</html>

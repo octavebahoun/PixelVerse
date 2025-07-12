@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: auto;
+            padding: 2em;
+            background: linear-gradient(to top, #9b6fc3, #2e1e3e);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 1em;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 2em;
+        }
+
+        .stat-box {
+            background: #333;
+            padding: 1em 2em;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            margin: 0 1em;
+            text-align: center;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2em;
+        }
+
+        th,
+        td {
+            padding: 0.75em;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        th {
+            background-color: #2d89ef;
+            color: white;
+        }
+
+        .lo {
+            background-color: #333;
+            color: white;
+            padding: 0.5em 1em;
+            border: 2px solid #333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Tableau de bord</h1>
+
+    <li><a href="{{ url_for('gestion_utilisateurs') }}" class="lo">👥 Gérer les utilisateurs</a></li>
+
+
+    <div class="stats">
+        <div class="stat-box">
+            <h2>Total utilisateurs</h2>
+            <p>{{ total_users }}</p>
+        </div>
+        <div class="stat-box">
+            <h2>Inscriptions aujourd'hui</h2>
+            <p>{{ inscriptions_today }}</p>
+        </div>
+        <div class="stat-box">
+            <h2>Images dans la galerie</h2>
+            <p>{{ images_count }}</p>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-box">
+            <h2>Total likes</h2>
+            <p>{{ total_likes }}</p>
+        </div>
+        <div class="stat-box">
+            <h2>Total favoris</h2>
+            <p>{{ total_favoris }}</p>
+        </div>
+    </div>
+
+    <h2>Top utilisateurs actifs</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Utilisateur</th>
+                <th>Nombre de visites</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for nom, vues in top_users %}
+            <tr>
+                <td>{{ nom }}</td>
+                <td>{{ vues }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2">Aucune donnée</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Images les plus likées</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Nombre de likes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for image, likes in top_images %}
+            <tr>
+                <td>{{ image }}</td>
+                <td>{{ likes }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2">Aucune donnée</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><a href="{{ url_for('accueil') }}">Retour à l'accueil</a></p>
+</body>
+
+</html>

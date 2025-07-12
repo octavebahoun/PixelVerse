@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Mes Favoris</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/favoris.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo Okatech" id="logo" />
+        </div>
+        <div class="site-title">Okatech-Bénin</div>
+
+        <div class="menu-icon" id="burger">&#9776;</div>
+        <ul class="nav-links" id="navLinks">
+            <div class="menu-icon" id="closeSidebar">&times;</div>
+            <li><a href="/" class="g">🏠 Accueil</a></li>
+            <li><a href="/galerie" class="o">🎌 Galerie Anime</a></li>
+            <li><a href="/populaires">🔥 Populaires</a></li>
+            {% if session.get('user_id') %}
+            <li><a href="/favoris" class="o">⭐ Mes Favoris</a></li>
+            <li><a href="/profil" class="o">💡 Mon Profil</a></li>
+            <li><a href="/deconnexion" class="o">🚪 Déconnexion</a></li>
+            {% else %}
+            <li><a href="/formulaire" class="o">💡 Inscription</a></li>
+            <li><a href="/connexion" class="o">🔒 Connexion</a></li>
+            {% endif %}
+            {% if session.get('role') == 'admin' %}
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('stats') }}">Statistiques</a></li>
+            {% endif %}
+
+        </ul>
+        </nav>
+    </header>
+
+    <h1>Mes images likées</h1>
+
+    {% if favoris %}
+    <div class="galerie">
+        {% for image in favoris %}
+        <div class="image-card" id="card-{{ image|replace('.', '_')|replace('/', '_') }}">
+            <img src="{{ url_for('static', filename='images/' + image) }}" alt="{{ image }}" class="image">
+            <button onclick="supprimerFavoris('{{ image }}')">Retirer des favoris</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Vous n'avez encore liké aucune image.</p>
+    {% endif %}
+
+    <a href="{{ url_for('galerie') }}">← Retour à la galerie</a>
+
+
+
+    <script>
+function supprimerFavoris(imageName) {
+    axios.post("{{ url_for('supprimer_favoris') }}", new URLSearchParams({ image_name: imageName }))
+        .then(response => {
+            if (response.data.success) {
+                const cardId = "card-" + imageName.replace(/\./g, "_").replace(/\//g, "_");
+                const cardElement = document.getElementById(cardId);
+                if (cardElement) {
+                    cardElement.remove();
+                }
+                alert(response.data.message);
+            } else {
+                alert(response.data.message);
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            alert("Erreur lors de la suppression.");
+        });
+}
+
+
+
+        // Toggle menu burger
+        document.addEventListener("DOMContentLoaded", () => {
+            const burger = document.getElementById("burger");
+            const navLinks = document.getElementById("navLinks");
+            const closeSidebar = document.getElementById("closeSidebar");
+
+            burger.addEventListener("click", () => {
+                navLinks.classList.toggle("show");
+            });
+
+            closeSidebar.addEventListener("click", () => {
+                navLinks.classList.toggle("show");
+            });
+        });
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie Anime - Okatech</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gallery.css') }}">
+    <script src="{{ url_for('static', filename='js/script3.js') }}" defer></script>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo Okatech" id="logo" />
+        </div>
+        <div class="site-title">Okatech-Bénin</div>
+
+        <div class="menu-icon" id="burger">&#9776;</div>
+        <ul class="nav-links" id="navLinks">
+            <div class="menu-icon" id="closeSidebar">&times;</div>
+            <li><a href="/" class="g">🏠 Accueil</a></li>
+            <li><a href="/galerie" class="o">🎌 Galerie Anime</a></li>
+            <li><a href="/populaires">🔥 Populaires</a></li>
+            {% if session.get('user_id') %}
+            <li><a href="/favoris" class="o">⭐ Mes Favoris</a></li>
+            <li><a href="/profil" class="o">💡 Mon Profil</a></li>
+            <li><a href="/deconnexion" class="o">🚪 Déconnexion</a></li>
+            {% else %}
+            <li><a href="/formulaire" class="o">💡 Inscription</a></li>
+            <li><a href="/connexion" class="o">🔒 Connexion</a></li>
+            {% endif %}
+            {% if session.get('role') == 'admin' %}
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('stats') }}">Statistiques</a></li>
+            {% endif %}
+
+        </ul>
+        </nav>
+    </header>
+
+
+    <main>
+        <nav class="dropdown-menu">
+            <button class="dropbtn">Catégories ▼</button>
+            <div class="dropdown-content">
+                <a href="personnage.html">🎎 Personnage</a>
+                <a href="paysage.html">🌄 Paysage</a>
+                <a href="mecha.html">🤖 Mecha</a>
+                <a href="animal.html">🐾 Animal</a>
+                <a href="autre.html">✨ Autre</a>
+            </div>
+        </nav>
+
+        <section class="gallery">
+            {% for image in images %}
+            <div class="gallery-item">
+                <img src="{{ url_for('static', filename='images/' + image) }}" alt="{{ image }}" loading="lazy">
+                <div class="like-section">
+                    <!-- Bouton téléchargement -->
+                    <a href="{{ url_for('static', filename='images/' + image) }}" download class="download-btn"
+                        title="Télécharger l'image">
+                        ⬇️
+                    </a>
+                    <!-- Bouton like -->
+                    <button aria-label="Like" onclick="likeImage('{{ image }}')">❤️</button>
+                    <span id="like-count-{{ image }}">{{ likes[image] }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        </section>
+
+
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Okatech-Bénin. Tous droits réservés.</p>
+    </footer>
+
+
+</body>
+
+</html>

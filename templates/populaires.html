@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Images Populaires - Okatech-Bénin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/gallery.css') }}" />
+    <script src="{{ url_for('static', filename='js/script7.js') }}" defer></script>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo Okatech" id="logo" />
+        </div>
+        <div class="site-title">Okatech-Bénin</div>
+
+        <div class="menu-icon" id="burger">&#9776;</div>
+        <ul class="nav-links" id="navLinks">
+            <div class="menu-icon" id="closeSidebar">&times;</div>
+            <li><a href="/" class="g">🏠 Accueil</a></li>
+            <li><a href="/galerie" class="o">🎌 Galerie Anime</a></li>
+            <li><a href="/populaires">🔥 Populaires</a></li>
+            {% if session.get('user_id') %}
+            <li><a href="/favoris" class="o">⭐ Mes Favoris</a></li>
+            <li><a href="/profil" class="o">💡 Mon Profil</a></li>
+            <li><a href="/deconnexion" class="o">🚪 Déconnexion</a></li>
+            {% else %}
+            <li><a href="/formulaire" class="o">💡 Inscription</a></li>
+            <li><a href="/connexion" class="o">🔒 Connexion</a></li>
+            {% endif %}
+            {% if session.get('role') == 'admin' %}
+            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li><a href="{{ url_for('stats') }}">Statistiques</a></li>
+            {% endif %}
+
+        </ul>
+        </nav>
+    </header>
+
+    <h1>Images les plus populaires 🔥</h1>
+
+    {% if images %}
+    <div class="galerie">
+        {% for image_name, like_count in images %}
+        <div class="image-card">
+            <img src="{{ url_for('static', filename='images/' + image_name) }}" alt="{{ image_name }}">
+            <p>{{ like_count }} likes ⭐</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>Aucune image n'a encore plus de 10 likes.</p>
+    {% endif %}
+
+    <footer>
+        <p>
+            &copy; 2025 Okatech-Bénin. Tous droits réservés.<br />
+            <a href="mailto:contact@okatech-benin.com">Contact</a>
+        </p>
+    </footer>
+
+</body>
+
+</html>
