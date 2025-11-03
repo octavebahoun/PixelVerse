@@ -12,7 +12,7 @@ DB_PATH = os.path.join(BASE_DIR, "galerie.db")
 
 # === CONFIGURATION FLASK === 
 app = Flask(__name__)
-app.secret_key = "645231977ghtffyudgsyuguilbqcyuigunnnnnnnnabvycuhgs462w"
+app.secret_key = os.environ.get('SECRET_KEY', 'ma_cle_de_secours')
 
 
 # === FONCTION DE CONNEXION BDD ===
@@ -298,14 +298,33 @@ def populaires():
 @app.route("/upload", methods=["GET", "POST"])
 def upload_image():
     if request.method == 'POST':
-        if 'image' not in request.files:
-            return 'Aucun fichier sélectionné'
-        file = request.files['image']
-        if file.filename == '' or not allowed_file(file.filename):
-            return 'Fichier invalide'
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return redirect(url_for('galerie'))
+        if 'images' not in request.files:
+            flash('Aucun fichier sélectionné.', 'error')
+            return redirect(url_for('upload_image'))
+        files = request.files.getlist('images')
+        if not files or files == [None]:
+            flash('Aucun fichier sélectionné.', 'error')
+            return redirect(url_for('upload_image'))
+        success_count = 0
+        for file in files:
+            if not file or not file.filename or file.filename == '':
+                flash('Un des fichiers n\'a pas de nom.', 'error')
+                continue
+            if not allowed_file(file.filename):
+                flash(f"{file.filename} : format non autorisé.", 'error')
+                continue
+            file.seek(0, 2)  # Seek to end to get size
+            size = file.tell()
+            file.seek(0)
+            if size > 5 * 1024 * 1024:
+                flash(f"{file.filename} : fichier trop volumineux (> 5 Mo).", 'error')
+                continue
+            filename = secure_filename(str(file.filename))
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            success_count += 1
+        if success_count:
+            flash(f"{success_count} image(s) envoyée(s) avec succès !", 'success')
+        return redirect(url_for('upload_image'))
     return render_template('upload.html')
 
 
@@ -483,6 +502,5 @@ def supprimer_utilisateur(user_id):
 
 # === LANCEMENT DU SERVEUR ===
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
 

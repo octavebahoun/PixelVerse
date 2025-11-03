@@ -17,7 +17,7 @@
             <img src="{{ url_for('static', filename='images/logo.jpg') }}" width="100" height="100" alt="Logo Okatech"
                 id="logo" />
         </div>
-        <div class="site-title">Okatech-Bénin</div>
+        <div class="site-title">PixelVerse</div>
 
 
         <nav>
@@ -44,11 +44,56 @@
         </nav>
     </header>
     <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="flashes">
+            {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
         <h2>Uploader une image</h2>
         <form action="{{ url_for('upload_image') }}" method="post" enctype="multipart/form-data">
-            <input type="file" name="image" required>
+            <label for="imageInput">Choisissez une ou plusieurs images :</label><br>
+            <input type="file" name="images" id="imageInput" accept="image/*" multiple required>
+            <br>
+            <span id="fileError" style="color:#c0392b; font-weight:bold; display:none;"></span>
+            <div id="previews" style="display:flex; flex-wrap:wrap; gap:15px; justify-content:center;"></div>
+            <br>
             <button type="submit">Envoyer</button>
         </form>
+        <script>
+            document.getElementById('imageInput').addEventListener('change', function (event) {
+                const previews = document.getElementById('previews');
+                const fileError = document.getElementById('fileError');
+                previews.innerHTML = '';
+                fileError.textContent = '';
+                fileError.style.display = 'none';
+                const files = Array.from(event.target.files);
+                let errorMessages = [];
+                let hasValid = false;
+                files.forEach(file => {
+                    if (file.size > 5 * 1024 * 1024) {
+                        errorMessages.push("Le fichier '" + file.name + "' est trop volumineux (max 5 Mo).");
+                    } else {
+                        const img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        img.style.maxWidth = '150px';
+                        img.style.maxHeight = '150px';
+                        img.style.borderRadius = '8px';
+                        img.style.boxShadow = '0 2px 8px #ccc';
+                        img.alt = "Aperçu de " + file.name;
+                        previews.appendChild(img);
+                        hasValid = true;
+                    }
+                });
+                if (errorMessages.length > 0) {
+                    fileError.innerHTML = errorMessages.join('<br>');
+                    fileError.style.display = 'block';
+                }
+            });
+        </script>
         <p><a href="{{ url_for('galerie') }}">Voir la galerie</a></p>
     </div>
 

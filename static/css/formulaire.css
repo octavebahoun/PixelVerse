@@ -20,7 +20,7 @@ body {
 header {
     display: flex;
     align-items: center;
-    background: #333;
+    background: linear-gradient(to right, #9b6fc3, #2e1e3e, #2e1e3e);
     color: white;
     padding: 0.75rem 1.5rem;
     position: relative;

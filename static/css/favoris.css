@@ -14,13 +14,39 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    animation: fadeIn 2s ease-in;
+}
+
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 /* HEADER */
 header {
     display: flex;
     align-items: center;
-    background: #333;
+    background: linear-gradient(to right, #9b6fc3, #2e1e3e, #2e1e3e);
     color: white;
     padding: 0.75rem 1.5rem;
     position: relative;

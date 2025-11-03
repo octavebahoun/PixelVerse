@@ -14,7 +14,7 @@
         <div class="logo-container">
             <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo Okatech" id="logo" />
         </div>
-        <div class="site-title">Okatech-Bénin</div>
+        <div class="site-title">PixelVerse</div>
 
         <div class="menu-icon" id="burger">&#9776;</div>
         <ul class="nav-links" id="navLinks">
@@ -59,25 +59,25 @@
 
 
     <script>
-function supprimerFavoris(imageName) {
-    axios.post("{{ url_for('supprimer_favoris') }}", new URLSearchParams({ image_name: imageName }))
-        .then(response => {
-            if (response.data.success) {
-                const cardId = "card-" + imageName.replace(/\./g, "_").replace(/\//g, "_");
-                const cardElement = document.getElementById(cardId);
-                if (cardElement) {
-                    cardElement.remove();
-                }
-                alert(response.data.message);
-            } else {
-                alert(response.data.message);
-            }
-        })
-        .catch(error => {
-            console.error(error);
-            alert("Erreur lors de la suppression.");
-        });
-}
+        function supprimerFavoris(imageName) {
+            axios.post("{{ url_for('supprimer_favoris') }}", new URLSearchParams({ image_name: imageName }))
+                .then(response => {
+                    if (response.data.success) {
+                        const cardId = "card-" + imageName.replace(/\./g, "_").replace(/\//g, "_");
+                        const cardElement = document.getElementById(cardId);
+                        if (cardElement) {
+                            cardElement.remove();
+                        }
+                        alert(response.data.message);
+                    } else {
+                        alert(response.data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    alert("Erreur lors de la suppression.");
+                });
+        }
 
 
 

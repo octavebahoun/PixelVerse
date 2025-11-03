@@ -14,28 +14,27 @@
         <div class="logo-container">
             <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="Logo Okatech" id="logo" />
         </div>
-        <div class="site-title">Okatech-Bénin</div>
-
-        <div class="menu-icon" id="burger">&#9776;</div>
-        <ul class="nav-links" id="navLinks">
-            <div class="menu-icon" id="closeSidebar">&times;</div>
-            <li><a href="/" class="g">🏠 Accueil</a></li>
-            <li><a href="/galerie" class="o">🎌 Galerie Anime</a></li>
-            <li><a href="/populaires">🔥 Populaires</a></li>
-            {% if session.get('user_id') %}
-            <li><a href="/favoris" class="o">⭐ Mes Favoris</a></li>
-            <li><a href="/profil" class="o">💡 Mon Profil</a></li>
-            <li><a href="/deconnexion" class="o">🚪 Déconnexion</a></li>
-            {% else %}
-            <li><a href="/formulaire" class="o">💡 Inscription</a></li>
-            <li><a href="/connexion" class="o">🔒 Connexion</a></li>
-            {% endif %}
-            {% if session.get('role') == 'admin' %}
-            <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
-            <li><a href="{{ url_for('stats') }}">Statistiques</a></li>
-            {% endif %}
-
-        </ul>
+        <div class="site-title">PixelVerse</div>
+        <nav>
+            <div class="menu-icon" id="burger">&#9776;</div>
+            <ul class="nav-links" id="navLinks">
+                <div class="menu-icon" id="closeSidebar">&times;</div>
+                <li><a href="/" class="g">🏠 Accueil</a></li>
+                <li><a href="/galerie" class="o">🎌 Galerie Anime</a></li>
+                <li><a href="/populaires">🔥 Populaires</a></li>
+                {% if session.get('user_id') %}
+                <li><a href="/favoris" class="o">⭐ Mes Favoris</a></li>
+                <li><a href="/profil" class="o">💡 Mon Profil</a></li>
+                <li><a href="/deconnexion" class="o">🚪 Déconnexion</a></li>
+                {% else %}
+                <li><a href="/formulaire" class="o">💡 Inscription</a></li>
+                <li><a href="/connexion" class="o">🔒 Connexion</a></li>
+                {% endif %}
+                {% if session.get('role') == 'admin' %}
+                <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                <li><a href="{{ url_for('stats') }}">Statistiques</a></li>
+                {% endif %}
+            </ul>
         </nav>
     </header>
 
@@ -52,32 +51,129 @@
             </div>
         </nav>
 
-        <section class="gallery">
+        <section class="gallery" id="gallery">
             {% for image in images %}
-            <div class="gallery-item">
-                <img src="{{ url_for('static', filename='images/' + image) }}" alt="{{ image }}" loading="lazy">
+            <div class="gallery-item" style="display:none;">
+                <img src="{{ url_for('static', filename='images/' + image) }}" alt="{{ image }}" loading="lazy"
+                    onclick="openLightbox('{{ url_for('static', filename='images/' + image) }}')">
                 <div class="like-section">
-                    <!-- Bouton téléchargement -->
                     <a href="{{ url_for('static', filename='images/' + image) }}" download class="download-btn"
                         title="Télécharger l'image">
                         ⬇️
                     </a>
-                    <!-- Bouton like -->
-                    <button aria-label="Like" onclick="likeImage('{{ image }}')">❤️</button>
-                    <span id="like-count-{{ image }}">{{ likes[image] }}</span>
+                    {% set liked = image in liked_images %}
+                    <button aria-label="Like" class="like-btn{% if liked %} liked{% endif %}" data-image="{{ image }}"
+                        data-liked="{{ '1' if liked else '0' }}">
+                        <span class="like-icon">{% if liked %}❤️{% else %}🤍{% endif %}</span>
+                    </button>
+                    <span class="like-count" id="like-count-{{ image }}">{{ likes[image] }}</span>
                 </div>
             </div>
             {% endfor %}
         </section>
+        <div id="loader" class="loader" style="display:none;"></div>
+        <!-- Lightbox/Modale pour l'aperçu en grand -->
+        <div id="lightbox" class="lightbox" style="display:none;">
+            <span class="close" id="closeLightbox">&times;</span>
+            <img class="lightbox-content" id="lightbox-img" src="" alt="Aperçu en grand">
+        </div>
 
 
     </main>
 
     <footer>
-        <p>&copy; 2025 Okatech-Bénin. Tous droits réservés.</p>
+        <p>&copy; 2025 PixelVerse. Tous droits réservés.</p>
     </footer>
 
+    <script>
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = src;
+            lightbox.style.display = 'flex';
+        }
+        document.getElementById('closeLightbox').onclick = function () {
+            document.getElementById('lightbox').style.display = 'none';
+            document.getElementById('lightbox-img').src = '';
+        };
+        // Fermer la lightbox en cliquant en dehors de l'image
+        document.getElementById('lightbox').onclick = function (e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+                document.getElementById('lightbox-img').src = '';
+            }
+        };
 
+        // Infinite scroll
+        const galleryItems = Array.from(document.querySelectorAll('.gallery-item'));
+        const loader = document.getElementById('loader');
+        let itemsPerLoad = 10;
+        let itemsToShow = 20;
+        let currentIndex = 0;
+
+        function showNextImages() {
+            loader.style.display = 'block';
+            setTimeout(() => {
+                let count = 0;
+                while (currentIndex < galleryItems.length && count < itemsPerLoad) {
+                    const item = galleryItems[currentIndex];
+                    item.style.display = 'block';
+                    item.classList.add('fade-in');
+                    currentIndex++;
+                    count++;
+                }
+                loader.style.display = 'none';
+            }, 400); // Simule un petit délai de chargement
+        }
+
+        // Affiche les premières images
+        window.addEventListener('DOMContentLoaded', () => {
+            let count = 0;
+            while (currentIndex < galleryItems.length && count < itemsToShow) {
+                const item = galleryItems[currentIndex];
+                item.style.display = 'block';
+                item.classList.add('fade-in');
+                currentIndex++;
+                count++;
+            }
+        });
+
+        // Détecte le scroll bas de page
+        window.addEventListener('scroll', () => {
+            if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 200)) {
+                if (currentIndex < galleryItems.length && loader.style.display === 'none') {
+                    showNextImages();
+                }
+            }
+        });
+
+        // Like/Unlike dynamique
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const image = this.getAttribute('data-image');
+                const liked = this.getAttribute('data-liked') === '1';
+                const action = liked ? 'unlike' : 'like';
+                fetch('/like', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ image_name: image, action: action })
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.setAttribute('data-liked', liked ? '0' : '1');
+                            this.classList.toggle('liked', !liked);
+                            this.querySelector('.like-icon').textContent = liked ? '🤍' : '❤️';
+                            document.getElementById('like-count-' + image).textContent = data.like_count;
+                        } else {
+                            alert(data.message || 'Erreur lors du like.');
+                        }
+                    })
+                    .catch(() => alert('Connecter vous pour liker.'));
+            });
+        });
+    </script>
 </body>
 
 </html>
